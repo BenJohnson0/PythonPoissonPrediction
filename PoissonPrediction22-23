@@ -17,30 +17,30 @@ class PoissonPrediction():
     
     # initialization method
     def __init__(self):
-        self.Home_score_Home = int(input("How many goals did the home team score at home last season? (Team) "))
-        self.Away_con_Away = int(input("How many goals did the away team concede away from home last season? (Team) "))
-        self.Away_score_Away = int(input("How many goals did the away team score away last season? (Team) "))
-        self.Home_con_Home = int(input("How many goals did the home team concede at home last season? (Team) "))
+        self.Home_score_Home = int(input("How many goals did the home team score at home last season? "))
+        self.Away_con_Away = int(input("How many goals did the away team concede away from home last season? "))
+        self.Away_score_Away = int(input("How many goals did the away team score away last season? "))
+        self.Home_con_Home = int(input("How many goals did the home team concede at home last season? "))
     
     # calculate home team attacking strength
     def HTAS(self):
-        temp_1 = TotalHomeGoals / TotalGames
-        temp_2 = round(self.Home_score_Home / HomeGames, 3)
-        HTAS = round(temp_1 / temp_2, 3)
+        temp_1 = TotalHomeGoals / TotalGames 
+        temp_2 = round(self.Home_score_Home / HomeGames, 3) 
+        HTAS = round(temp_2 / temp_1, 3)
         return HTAS
 
     # calculate away team defensive strength
     def ATDS(self):
-        temp_1 = round(self.Away_con_Away / HomeGames, 3)
-        temp_2 = TotalHomeGoals / HomeGames
+        temp_1 = round(self.Away_con_Away / HomeGames, 3) 
+        temp_2 = TotalHomeGoals / TotalGames 
         ATDS = round(temp_1 / temp_2, 3)
         return ATDS
 
     # calculate away team attacking strength
     def ATAS(self):
         temp_1 = TotalAwayGoals / TotalGames
-        temp_2 = round(self.Away_score_Away / HomeGames, 3)
-        ATAS = round(temp_2 / temp_1, 3)
+        temp_2 = round(self.Away_score_Away / HomeGames, 3) 
+        ATAS = round(temp_2 / temp_1, 3) 
         return ATAS
 
     # calculate home team defensive strength
@@ -50,24 +50,29 @@ class PoissonPrediction():
         return HTDS
     
     # expected home goals (xG)
-    def xHG(HTAS, ATDS):
-        xHG = round(HTAS*ATDS*(TotalHomeGoals/TotalGames), 2)
+    def xHG(self, HTAS, ATDS):
+        xHG = round(HTAS * ATDS * (TotalHomeGoals/TotalGames), 2)
         print(xHG)
 
     # expected away goals (xG)
-    def xAG(ATAS, HTDS):
-        xAG = round(ATAS*HTDS*(TotalAwayGoals/TotalGames), 2)
+    def xAG(self, ATAS, HTDS):
+        xAG = round(ATAS * HTDS * (TotalAwayGoals / TotalGames), 2)
         print(xAG)
 
-    def control(self):
-        print("1: ", self.Home_score_Home)
-
+# function calls
+# create object instance
 PP = PoissonPrediction()
-#PP.control()
 
+# calculate attacking / defensive strength
 PP.HTDS()
 PP.HTAS()
 PP.ATDS()
 PP.ATAS()
 
-PP.xHG()
+# calculate expected goals based on attacking / defensive strength
+print("\n/ / / / / / / / / / / / / / / / / / / / / / / / /\n")
+
+print("Home xG: ")
+PP.xHG(PP.HTAS(), PP.ATDS())
+print("\nAway xG: ")
+PP.xAG(PP.ATAS(), PP.HTDS())
