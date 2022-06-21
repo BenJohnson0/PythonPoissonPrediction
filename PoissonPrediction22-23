@@ -3,8 +3,17 @@
 # Author: Ben Johnson
 # Date: June 2022
 
+# This program uses the 2021/22 Premier League season
+# goalscoring statistics to determine the probable number
+# of goals scored in a game, in the 2022/23 season.
+# Each team is assigned an attack and defence "strength"
+# as well as expected goals (xG) for your desired fixture.
+# Using the Poisson Distribution formula we can generate 
+# all 36 possible scoreline probabilities with <=10 goals total.
+
 # imports
 import math
+import matplotlib.pyplot as plt
 
 # global variables
 HomeGames = 19
@@ -12,12 +21,18 @@ TotalGames = 380
 TotalHomeGoals = 575 # total home goals scored
 TotalAwayGoals = 496 # total away goals scored
 
+# graph detailing
+plt.xlabel('Home Goals')
+plt.ylabel('Away Goals')
+plt.title('EPL Poisson Distribution 2022/23')
+
+
 # base class definition
 class PoissonPrediction():
     
     # initialization method
     def __init__(self):
-        self.Home_score_Home = int(input("How many goals did the home team score at home last season? "))
+        self.Home_score_Home = int(input("\nHow many goals did the home team score at home last season? "))
         self.Away_con_Away = int(input("How many goals did the away team concede away from home last season? "))
         self.Away_score_Away = int(input("How many goals did the away team score away last season? "))
         self.Home_con_Home = int(input("How many goals did the home team concede at home last season? "))
@@ -52,27 +67,48 @@ class PoissonPrediction():
     # expected home goals (xG)
     def xHG(self, HTAS, ATDS):
         xHG = round(HTAS * ATDS * (TotalHomeGoals/TotalGames), 2)
-        print(xHG)
+        return xHG
 
     # expected away goals (xG)
     def xAG(self, ATAS, HTDS):
         xAG = round(ATAS * HTDS * (TotalAwayGoals / TotalGames), 2)
-        print(xAG)
+        return xAG
+
+    # Poisson Distribution = [(λ^k)(e^-λ)]/k! 
+    # used a nested for loop to calculate the 36 permutations
+    def PoissonDistribution(self, xHG, xAG):
+        for HomeGoalProb in range(6):
+            for AwayGoalProb in range(6):
+                var1 = (xHG) ** HomeGoalProb
+                var2 = math.e**(-xHG)
+                var3 = math.factorial(HomeGoalProb)
+
+                var4 = (xAG) ** AwayGoalProb
+                var5 = math.e ** (-xAG)
+                var6 = math.factorial(AwayGoalProb)
+
+                HomeChance = round( (var1*var2) / var3, 4)
+                AwayChance = round( (var4*var5) / var6, 4)
+
+                ResultChance = round((HomeChance*AwayChance)*100, 2)
+
+                print(HomeGoalProb, "-", AwayGoalProb, "scoreline chance is", ResultChance,"%")
 
 # function calls
 # create object instance
 PP = PoissonPrediction()
 
-# calculate attacking / defensive strength
-PP.HTDS()
-PP.HTAS()
-PP.ATDS()
-PP.ATAS()
+# calculate and display expected goals 
+# based on attacking / defensive strength
+print("\n- - Expected Goals - -\n")
+print("Home xG:", end = " ")
+print(PP.xHG(PP.HTAS(), PP.ATDS()))
+print("Away xG:", end = " ")
+print(PP.xAG(PP.ATAS(), PP.HTDS()))
 
-# calculate expected goals based on attacking / defensive strength
-print("\n/ / / / / / / / / / / / / / / / / / / / / / / / /\n")
+# calculate and display Poisson Distribution for n <= 5 goals for each team
+print("\n- - Poisson Distribution - -\n")
+PP.PoissonDistribution(PP.xHG(PP.HTAS(), PP.ATDS()), PP.xAG(PP.ATAS(), PP.HTDS()))
 
-print("Home xG: ")
-PP.xHG(PP.HTAS(), PP.ATDS())
-print("\nAway xG: ")
-PP.xAG(PP.ATAS(), PP.HTDS())
+
+
