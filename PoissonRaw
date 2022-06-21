@@ -1,0 +1,75 @@
+import math
+
+#Home Team Attacking Strength
+a = int(input("How many goals did the home team score at home last season? (Team) "))
+b = 576 #this is the total home goals in 2019/20 Premier League
+HomeGames = 19
+TotalGames = 380
+e = b/TotalGames
+c = round(a/HomeGames, 3)
+d = round(c/e, 3)
+
+#Away Team Defensive Strength
+z = int(input("How many goals did the away team concede away from home last season? (Team) "))
+y = round(z/HomeGames, 3)
+w = b/TotalGames
+v = round(y/w, 3)
+
+
+#Away Team Attacking Strength
+h = int(input("How many goals did the away team score away last season? (Team) "))
+j = 458 #this is the total away goals in 2018/19 Premier League
+l = j/TotalGames
+i = round(h/HomeGames, 3)
+q = round(i/(j/TotalGames), 3)
+
+
+#Home Team Defensive Strength
+m = int(input("How many goals did the home team concede at home last season? (Team) "))
+o = round(m/HomeGames, 3)
+p = round(o/(j/TotalGames), 3)
+
+#Expected home goals
+xHG = round(d*v*e, 2)
+
+#Expected away goals
+xAG = round(q*p*l, 2)
+
+print(" ")
+print("The expected home goal count is", xHG)
+print("The expected away goal count is", xAG)
+print(" ")
+
+#P() = [(λ^k)(e^-λ)]/k!
+k = int(input("The number of home goals you want to find the probability for: "))
+k2 = int(input("The number of away goals you want to find the probability for: "))
+HoA = input("Is your predicted winning team playing at Home(H) or Away(A)? (if draw, use H) ")
+
+
+a1 = (xHG)**k
+a2 = 2.7182818284590452353602874713527**(-xHG)
+a3 = math.factorial(k)
+
+b1 = (xAG)**k2
+b2 = 2.7182818284590452353602874713527**(-xAG)
+b3 = math.factorial(k2)
+
+print(" ")
+print("The Away Team Defensive Strength is", v)
+print("The Home Team Attacking Strength is", d)
+print("The Away Team Attacking Strength is", q)
+print("The Home Team Defensive Strength is", p)
+print("---Under 1.00 is good for defensive and over 1.00 is better for attacking---")
+print(" ")
+
+if HoA == 'H' or 'h':
+    print("The chance of the home team scoring", k,"goal(s) is", round((a1*a2)/a3*100, 2), "%")
+
+if HoA == 'A' or 'a': 
+    print("The chance of the away team scoring", k2,"goal(s) is", round((b1*b2)/b3*100, 2), "%")
+         
+HomeCha = round((a1*a2)/a3, 4)
+AwayCha = round((b1*b2)/b3, 4)
+
+print(" ")
+print("The chance of a", k,"-", k2,"scoreline is", round((HomeCha*AwayCha)*100, 2), "%")
