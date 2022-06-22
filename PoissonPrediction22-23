@@ -14,7 +14,7 @@
 # imports
 import math
 import matplotlib.pyplot as plt
-import numpy as np
+from tabulate import tabulate
 
 # global variables
 HomeGames = 19
@@ -22,7 +22,6 @@ TotalGames = 380
 TotalHomeGoals = 575 # total home goals scored PL 2021/22
 TotalAwayGoals = 496 # total away goals scored PL 2021/22
 ResultList = []
-N = 36
 
 # graph detailing
 plt.xlabel('Home Goals')
@@ -99,10 +98,11 @@ class PoissonPrediction():
                 print(HomeGoalProb, "-", AwayGoalProb, "scoreline chance is", ResultChance,"%")
 
     def PlotResults(self):
-        ResultList.sort(reverse = True)
-        print("\n", ResultList)
-        plt.scatter(ResultList, np.random.rand(N))
-        plt.show()
+        ResultGroups = list(zip(*(iter(ResultList),) * 6))
+
+        print("\n0     1     2     3     4     5")
+        print(tabulate(ResultGroups))
+        print("\n")
 
 # function calls
 # create object instance
