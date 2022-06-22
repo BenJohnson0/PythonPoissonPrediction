@@ -14,18 +14,20 @@
 # imports
 import math
 import matplotlib.pyplot as plt
+import numpy as np
 
 # global variables
 HomeGames = 19
 TotalGames = 380
-TotalHomeGoals = 575 # total home goals scored
-TotalAwayGoals = 496 # total away goals scored
+TotalHomeGoals = 575 # total home goals scored PL 2021/22
+TotalAwayGoals = 496 # total away goals scored PL 2021/22
+ResultList = []
+N = 36
 
 # graph detailing
 plt.xlabel('Home Goals')
 plt.ylabel('Away Goals')
 plt.title('EPL Poisson Distribution 2022/23')
-
 
 # base class definition
 class PoissonPrediction():
@@ -92,7 +94,15 @@ class PoissonPrediction():
 
                 ResultChance = round((HomeChance*AwayChance)*100, 2)
 
+                ResultList.append(ResultChance)
+
                 print(HomeGoalProb, "-", AwayGoalProb, "scoreline chance is", ResultChance,"%")
+
+    def PlotResults(self):
+        ResultList.sort(reverse = True)
+        print("\n", ResultList)
+        plt.scatter(ResultList, np.random.rand(N))
+        plt.show()
 
 # function calls
 # create object instance
@@ -109,6 +119,8 @@ print(PP.xAG(PP.ATAS(), PP.HTDS()))
 # calculate and display Poisson Distribution for n <= 5 goals for each team
 print("\n- - Poisson Distribution - -\n")
 PP.PoissonDistribution(PP.xHG(PP.HTAS(), PP.ATDS()), PP.xAG(PP.ATAS(), PP.HTDS()))
+
+PP.PlotResults()
 
 
 
