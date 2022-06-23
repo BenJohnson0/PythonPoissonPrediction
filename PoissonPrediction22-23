@@ -7,31 +7,29 @@
 # goalscoring statistics to determine the probable number
 # of goals scored in a game, in the 2022/23 season.
 # Each team is assigned an attack and defence "strength"
-# as well as expected goals (xG) for your desired fixture.
+# as well as expected goals (xG) for the desired fixture.
 # Using the Poisson Distribution formula we can generate 
 # all 36 possible scoreline probabilities with <=10 goals total.
+# The program outputs expected goals for each side, scoreline
+# probabilities over 7.5% and a table of away goal % and
+# home goal % for all permutations.
 
 # imports
-import math
-import matplotlib.pyplot as plt
-from tabulate import tabulate
+import math # for calculations using e and factorial (!)
+from tabulate import tabulate # to create the table of permutations
 
 # global variables
 HomeGames = 19
-TotalGames = 380
+TotalGames = 380 
 TotalHomeGoals = 575 # total home goals scored PL 2021/22
 TotalAwayGoals = 496 # total away goals scored PL 2021/22
-ResultList = []
-
-# graph detailing
-plt.xlabel('Home Goals')
-plt.ylabel('Away Goals')
-plt.title('EPL Poisson Distribution 2022/23')
+ResultList = [] # to store the results of the Poisson formula
 
 # base class definition
 class PoissonPrediction():
     
     # initialization method
+    # user inputs 4 values here used in the Poisson and xG formulas
     def __init__(self):
         self.Home_score_Home = int(input("\nHow many goals did the home team score at home last season? "))
         self.Away_con_Away = int(input("How many goals did the away team concede away from home last season? "))
@@ -75,7 +73,7 @@ class PoissonPrediction():
         xAG = round(ATAS * HTDS * (TotalAwayGoals / TotalGames), 2)
         return xAG
 
-    # Poisson Distribution = [(λ^k)(e^-λ)]/k! 
+    # Poisson Distribution = [ (λ^k) * (e^-λ) ] / k! 
     # used a nested for loop to calculate the 36 permutations
     def PoissonDistribution(self, xHG, xAG):
         for HomeGoalProb in range(6):
@@ -93,14 +91,16 @@ class PoissonPrediction():
 
                 ResultChance = round((HomeChance*AwayChance)*100, 2)
 
-                ResultList.append(ResultChance)
+                if ResultChance > 7.5:
+                    print(HomeGoalProb, "-", AwayGoalProb, "scoreline chance is", ResultChance,"%")
 
-                print(HomeGoalProb, "-", AwayGoalProb, "scoreline chance is", ResultChance,"%")
+                ResultList.append(ResultChance)
 
     def PlotResults(self):
         ResultGroups = list(zip(*(iter(ResultList),) * 6))
 
-        print("\n0     1     2     3     4     5")
+        print("\n     ---   Away Goals   ---")
+        print("0     1     2     3     4     5")
         print(tabulate(ResultGroups))
         print("\n")
 
@@ -120,7 +120,5 @@ print(PP.xAG(PP.ATAS(), PP.HTDS()))
 print("\n- - Poisson Distribution - -\n")
 PP.PoissonDistribution(PP.xHG(PP.HTAS(), PP.ATDS()), PP.xAG(PP.ATAS(), PP.HTDS()))
 
+# display the predicted Home / Away scorelines
 PP.PlotResults()
-
-
-
